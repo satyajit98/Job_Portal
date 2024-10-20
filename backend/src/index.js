@@ -19,11 +19,19 @@ app.use(cors(corsOption));
 
 const PORT = process.env.PORT || 5000;
 
+// app listing
+app.listen(PORT, () => {
+  connectDB();
+  console.log(`Server running at port: ${PORT}`);
+});
+
 app.get("/", (req, res) => {
   res.status(200).json({ message: "hello from job portal", success: true });
 });
 
-app.listen(PORT, () => {
-  connectDB();
-  console.log(`Server running at port: ${PORT}`);
+// middleware for error
+app.use((err, req, res, next) => {
+  const statusCode = err.status || 500;
+  const message = err.message || "Internal Server Error";
+  return res.status(statusCode).json({ success: false, statusCode, message });
 });
